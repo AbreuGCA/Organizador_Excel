@@ -11,12 +11,9 @@ def processar_arquivos(input_files, output_file):
 
     # Concatenar os DataFrames
     df_final = pd.concat(dfs, ignore_index=True)
-    
-    # Filtrar os dados para cidadãos de XPTO que frequentaram a escola e não tiveram dengue
-    df_filtrado = df_final[(df_final['Cidadão'] == 'XPTO') & (df_final['Frequentou Escola'] == 'Sim') & (df_final['Teve Dengue'] == 'Não')]
 
     # Escrever os dados processados em um único arquivo XLSX
-    df_filtrado.to_excel(output_file, index=False)
+    df_final.to_excel(output_file, index=False)
 
 # Lista de caminhos dos arquivos de entrada
 input_files = [
