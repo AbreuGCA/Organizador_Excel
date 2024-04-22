@@ -10,7 +10,7 @@ def processar_arquivo(input_files, output_file):
     
     # Converter a coluna 'Data de Nascimento' para o tipo de dados adequado (object)
     for df in dfs:
-        df['Data de Nascimento'] = df['Data de Nascimento'].astype(str)
+        df['Data de Nascimento'] = df['Data de Nascimento'].astype(object)
     
     # Fazer a junção (merge) dos DataFrames usando uma junção externa (outer join)
     df_final = pd.merge(dfs[0], dfs[1], on=['Nome', 'Nome da Mae', 'Nome do Pai', 'Data de Nascimento', 'ID'], how='outer')
