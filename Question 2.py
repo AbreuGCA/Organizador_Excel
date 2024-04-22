@@ -1,28 +1,39 @@
 import pandas as pd
 
-def processar_arquivo(input_file, output_file):
-    # Ler o arquivo Excel de entrada
-    df = pd.read_excel(input_file)
+def processar_arquivo(input_files, output_file):
+    # Lista para armazenar os DataFrames de cada arquivo
+    dfs = []
+    for input_file in input_files:
+        # Ler o arquivo CSV com ponto e vírgula como delimitador e encoding latin1
+        df = pd.read_csv(input_file, delimiter=';', encoding='latin1')
+        dfs.append(df)
+    
+    # Concatenar os DataFrames
+    df_final = pd.concat(dfs, ignore_index=True)
 
-    # Identificar as pessoas que tiveram dengue
-    pessoas_com_dengue = set(df[df['Ônibus'].notnull()]['Nome'])
+    # Verificar se há duplicatas de nomes com informações de ônibus
+    df_final['Duplicata_Onibus'] = df_final.duplicated(subset=['Nome', 'Nome da Mae', 'Nome do Pai'], keep=False) & (~df_final['Ônibus'].isnull())
 
-    # Filtrar as pessoas com base nas condições especificadas e remover duplicatas
-    df_filtrado = df[~((df['Ônibus'].notnull()) | ((df['Nome'].isin(pessoas_com_dengue)) &
-                       (df['Nome da Mae'].isin(df[df['Ônibus'].notnull()]['Nome da Mae'])) &
-                       (df['Nome do Pai'].isin(df[df['Ônibus'].notnull()]['Nome do Pai']))))]
+    # Excluir pessoas sem informações na coluna "Ônibus" ou duplicatas com ônibus
+    df_final = df_final[(df_final['Data da Dengue'].notnull()) | (~df_final['Ônibus'].isnull()) | df_final['Duplicata_Onibus']]
 
-    # Remover duplicatas com base nos critérios especificados
-    df_filtrado = df_filtrado.drop_duplicates(subset=["Nome", "Nome da Mae", "Nome do Pai"])
+    # Excluir pessoas sem informações na coluna "Data da Dengue"
+    df_final = df_final[df_final['Data da Dengue'].notnull()]
+
+    # Selecionar colunas necessárias
+    df_final = df_final[['Nome', 'Data de Nascimento', 'Data da Dengue']]
 
     # Escrever os dados processados no arquivo de saída
-    df_filtrado.to_excel(output_file, index=False)
+    df_final.to_excel(output_file, index=False)
 
-# Caminho do arquivo de entrada
-input_file = "C:\\Users\\gabri\\OneDrive\\Documentos\\Planilhas\\Conjunto Universo.xlsx"
+# Lista de caminhos dos arquivos de entrada
+input_files = [
+    "C:\\Users\\gabri\\OneDrive\\Documentos\\Planilhas\\Base de Dengue3.csv",
+    "C:\\Users\\gabri\\OneDrive\\Documentos\\Planilhas\\Base de Onibus3.csv"
+]
 
 # Caminho do arquivo de saída
 output_file = "C:\\Users\\gabri\\OneDrive\\Documentos\\Planilhas\\Questão 2.xlsx"
 
-# Chamada da função para processar o arquivo
-processar_arquivo(input_file, output_file)
+# Chamada da função para processar os arquivos
+processar_arquivo(input_files, output_file)
