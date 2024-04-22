@@ -14,11 +14,8 @@ def processar_arquivo(input_files, output_file):
     # Verificar se há duplicatas de nomes com informações de ônibus
     df_final['Duplicata_Onibus'] = df_final.duplicated(subset=['Nome', 'Nome da Mae', 'Nome do Pai'], keep=False) & (~df_final['Ônibus'].isnull())
 
-    # Excluir pessoas sem informações na coluna "Ônibus" ou duplicatas com ônibus
-    df_final = df_final[(df_final['Data da Dengue'].notnull()) | (~df_final['Ônibus'].isnull()) | df_final['Duplicata_Onibus']]
-
-    # Excluir pessoas sem informações na coluna "Data da Dengue"
-    df_final = df_final[df_final['Data da Dengue'].notnull()]
+    # Excluir pessoas sem informações na coluna "Ônibus" ou duplicatas com ônibus, e também excluir pessoas sem informações na coluna "Data da Dengue"
+    df_final = df_final[(df_final['Data da Dengue'].notnull() | ~df_final['Ônibus'].isnull() | df_final['Duplicata_Onibus']) & (df_final['Data da Dengue'].notnull())]
 
     # Selecionar colunas necessárias
     df_final = df_final[['Nome', 'Data de Nascimento', 'Data da Dengue']]
