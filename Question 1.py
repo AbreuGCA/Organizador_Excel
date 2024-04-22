@@ -11,7 +11,7 @@ def processar_arquivo(input_files, output_file):
     # Concatenar os DataFrames
     df_final = pd.concat(dfs, ignore_index=True)
     
-    # Verificar se há duplicatas de nomes com informações de dengue
+    # Verificar duplicatas de nomes com informações de dengue
     df_final['Duplicata_Dengue'] = df_final.duplicated(subset=['Nome'], keep=False) & (~df_final['Data da Dengue'].isnull())
     
     # Excluir pessoas com informações de dengue, sem informações na coluna "ID" ou duplicatas com dengue
@@ -21,7 +21,7 @@ def processar_arquivo(input_files, output_file):
     df_final = df_final[['Nome', 'Data de Nascimento', 'ID']]
     
     # Remover duplicatas dos dados finais
-    #df_final = df_final[~df_final.duplicated(subset=['Nome'], keep=False)]
+    # df_final = df_final[~df_final.duplicated(subset=['Nome'], keep=False)]
     
     # Escrever os dados processados no arquivo de saída
     df_final.to_excel(output_file, index=False)
