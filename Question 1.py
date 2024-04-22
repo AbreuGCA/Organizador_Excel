@@ -21,7 +21,7 @@ def processar_arquivo(input_files, output_file):
     df_final = df_final[['Nome', 'Data de Nascimento', 'ID']]
     
     # Remover duplicatas dos dados finais
-    df_final = df_final[~df_final.duplicated(subset=['Nome'], keep=False)]
+    #df_final = df_final[~df_final.duplicated(subset=['Nome'], keep=False)]
     
     # Escrever os dados processados no arquivo de saída
     df_final.to_excel(output_file, index=False)
